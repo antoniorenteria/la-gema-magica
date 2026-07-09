@@ -272,6 +272,46 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
 }
 #pcGanados b{color:var(--yellow);text-shadow:0 0 12px var(--yellow-glow)}
 #pcChip{color:var(--yellow)}
+
+/* ---------- Perfil y Top Cósmico ---------- */
+.pfBox{width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;margin-bottom:10px}
+#pfForm.hidden,#pfCard.hidden{display:none}
+.pfInput{
+  width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  color:var(--white);font-family:var(--body);font-size:14px;padding:12px 14px;
+  margin-bottom:10px;outline:none;text-align:center;
+}
+.pfInput:focus{border-color:var(--purple-light)}
+.pfInput::placeholder{color:#6a5a85}
+#pfAlias{text-transform:uppercase}
+.pfErr{min-height:15px;font-size:11px;color:#FF5577;margin-bottom:6px}
+.pfMsg{min-height:16px;font-size:12px;color:var(--yellow);margin:2px 0 8px}
+.pfCard{
+  width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:16px 20px;margin-bottom:10px;
+}
+.pfAlias{font-family:var(--display);font-size:21px;color:var(--yellow);letter-spacing:1px}
+.pfContacto{font-size:12px;color:var(--muted)}
+.pfStats{font-size:12px;color:var(--white);margin-bottom:6px}
+.pfStats b{color:var(--yellow)}
+.linkBtn{
+  background:none;border:none;cursor:pointer;font-family:var(--body);
+  color:var(--muted);font-size:11.5px;letter-spacing:.5px;text-decoration:underline;margin-top:10px;
+}
+.linkBtn:active{color:var(--white)}
+.overLinks{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+#topList{display:flex;flex-direction:column;gap:7px;width:100%;max-width:340px;margin-bottom:6px}
+.topRow{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:9px 14px;font-size:13px;
+}
+.topRow.me{border-color:var(--yellow);box-shadow:0 0 10px var(--yellow-glow)}
+.topPos{font-family:var(--display);width:32px;flex:none;color:var(--purple-light);font-size:14px;text-align:center}
+.topAlias{flex:1;min-width:0;text-align:left;color:var(--white);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topScore{font-family:var(--display);color:var(--yellow);letter-spacing:1px;font-size:14px}
+.topEmpty{font-size:12.5px;color:var(--muted);padding:16px 6px}
 </style>
 </head>
 <body>
@@ -306,8 +346,10 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
     <button class="btn" id="btnPlay">JUGAR</button>
     <div class="btnRow">
       <button class="btn ghost" id="btnRewards">🎁 RECOMPENSAS <span id="pcChip"></span></button>
+      <button class="btn ghost" id="btnTop">🏆 TOP</button>
     </div>
     <div class="best" id="bestTitle"></div>
+    <button class="linkBtn" id="btnPerfil"></button>
     <div class="credit">Cocinado por Mirano en su nave · Pachuca, Planeta Tierra</div>
   </div>
 
@@ -335,6 +377,10 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
       <button class="btn ghost" id="btnRewards2">🎁 RECOMPENSAS</button>
       <a class="btn ghost" href="https://elanillodelciclope.com/" target="_blank" rel="noopener">VER EL MENÚ →</a>
     </div>
+    <div class="overLinks">
+      <button class="linkBtn" id="btnTop2">🏆 TOP CÓSMICO</button>
+      <button class="linkBtn" id="btnPerfil2"></button>
+    </div>
     <p class="cta">Esta aventura continúa en nuestras redes ·<br>Suc. Tulipanes y Suc. Revolución · Pachuca, Hgo.</p>
   </div>
 
@@ -354,6 +400,45 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
     <p class="rwFine">Válido únicamente en sucursal (Tulipanes y Revolución, Pachuca). Un canje por visita. El canje lo confirma el staff en tu teléfono y los puntos se descuentan al momento. Recompensas sujetas a cambio.</p>
     <div class="btnRow">
       <button class="btn secondary" id="btnRwBack">← VOLVER</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA MI PROGRESO (registro con correo o teléfono) -->
+  <div class="screen hidden" id="scrPerfil">
+    <h2 class="rwTitle">MI PROGRESO</h2>
+    <div id="pfForm" class="pfBox">
+      <p class="rwHow">Regístrate con tu <b>correo o teléfono</b> para ponerle nombre a tu récord y respaldar tu progreso con un <b>código estelar</b>.</p>
+      <input class="pfInput" id="pfAlias" maxlength="14" placeholder="Tu alias galáctico" autocomplete="nickname">
+      <input class="pfInput" id="pfContacto" maxlength="60" placeholder="Correo o teléfono (10 dígitos)" autocomplete="email">
+      <div class="pfErr" id="pfErr"></div>
+      <button class="btn secondary" id="btnPfSave">GUARDAR</button>
+    </div>
+    <div id="pfCard" class="pfCard hidden">
+      <div class="pfAlias" id="pfCardAlias"></div>
+      <div class="pfContacto" id="pfCardContacto"></div>
+      <div class="pfStats" id="pfCardStats"></div>
+      <button class="btn secondary" id="btnPfCode">COPIAR CÓDIGO ESTELAR</button>
+      <button class="rwCancel" id="btnPfEdit">editar mis datos</button>
+    </div>
+    <div class="pfMsg" id="pfMsg"></div>
+    <div class="pfBox">
+      <p class="rwHow">¿Vienes de otro dispositivo? Pega aquí tu código estelar:</p>
+      <input class="pfInput" id="pfCode" placeholder="GEMA1.…" autocomplete="off">
+      <button class="btn ghost" id="btnPfImport">RESTAURAR PROGRESO</button>
+    </div>
+    <p class="rwFine">Tu progreso se guarda en este dispositivo. El código estelar te permite respaldarlo o llevarlo a otro. Usamos tu correo o teléfono únicamente para identificar tu récord.</p>
+    <div class="btnRow">
+      <button class="btn secondary" id="btnPfBack">← VOLVER</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA TOP CÓSMICO -->
+  <div class="screen hidden" id="scrTop">
+    <h2 class="rwTitle">TOP CÓSMICO</h2>
+    <p class="rwHow" id="topSub"></p>
+    <div id="topList"></div>
+    <div class="btnRow">
+      <button class="btn secondary" id="btnTopBack">← VOLVER</button>
     </div>
   </div>
 </div>
@@ -518,12 +603,14 @@ function floatTxt(x,y,txt,color,big){
 function startGame(){
   items=[];parts=[];floats=[];
   score=0;combo=0;lives=3;elapsed=0;spawnT=0;shakeT=0;feverT=0;hurtT=0;
-  hazardBoost=0;speedBoost=0;gemBoost=0;waveIdx=0;
+  hazardBoost=0;speedBoost=0;gemBoost=0;waveIdx=0;bgStageIdx=0;
   px=W/2;targetX=W/2;
   state=ST.PLAY;
   $('scrTitle').classList.add('hidden');
   $('scrOver').classList.add('hidden');
   $('scrRewards').classList.add('hidden');
+  $('scrPerfil').classList.add('hidden');
+  $('scrTop').classList.add('hidden');
   $('hud').classList.add('on');
   paintLives();paintScore();paintCombo();
   sfx.ui();
@@ -543,6 +630,8 @@ function gameOver(){
   $('pcGanados').innerHTML = pc.allowed>0
     ? `+<b>${pc.allowed}</b> ${pc.allowed===1?'PUNTO':'PUNTOS'} CÍCLOPE 👁`
     : (pc.raw>0 ? 'TOPE DIARIO DE PUNTOS ALCANZADO' : '');
+  topAdd(score);
+  paintPerfilLinks();
   setTimeout(()=>$('scrOver').classList.remove('hidden'), 550);
   sfx.over();
 }
@@ -556,6 +645,9 @@ function update(dt){
   if(waveIdx<WAVES.length && elapsed>=WAVES[waveIdx].t){
     toast(WAVES[waveIdx].msg); WAVES[waveIdx].fx(); waveIdx++;
   }
+  // el cosmos cambia de color conforme sube tu puntuación
+  const bi=bgStageForScore(score);
+  if(bi>bgStageIdx){ bgStageIdx=bi; toast(BG_STAGES[bi].msg,2600); }
   // spawn
   spawnT-=dt;
   if(spawnT<=0){
@@ -643,15 +735,35 @@ function hit(){
 }
 
 /* ---------------- Dibujo ---------------- */
+/* Fondo evolutivo: el cosmos cambia de color conforme avanzas,
+   manteniendo la misma textura (nebulosas radiales + estrellas). */
+const BG_STAGES=[
+  {min:0,    base:[5,0,8],   neb1:[45,0,80],   neb2:[107,33,168], msg:''},
+  {min:500,  base:[2,3,16],  neb1:[13,42,138], neb2:[37,99,235],  msg:'🌌 Entras a la Nebulosa Azul'},
+  {min:1200, base:[0,10,10], neb1:[6,95,70],   neb2:[16,185,129], msg:'🌌 Cruzas el Cinturón Esmeralda'},
+  {min:2500, base:[14,0,6],  neb1:[136,19,55], neb2:[225,29,72],  msg:'🌌 Cielo Carmesí… la Gema está cerca'},
+  {min:4000, base:[16,10,0], neb1:[146,107,0], neb2:[202,138,4],  msg:'🌌 El Dominio Dorado de la Gema'}
+];
+let bgStageIdx=0;
+let bgCur={base:BG_STAGES[0].base.slice(), neb1:BG_STAGES[0].neb1.slice(), neb2:BG_STAGES[0].neb2.slice()};
+function bgStageForScore(sc){ let i=0; for(let k=0;k<BG_STAGES.length;k++) if(sc>=BG_STAGES[k].min) i=k; return i; }
+function bgTick(dt){
+  const tgt=BG_STAGES[state===ST.TITLE?0:bgStageIdx];
+  const k=1-Math.exp(-dt*1.1);
+  for(const key of ['base','neb1','neb2'])
+    for(let i=0;i<3;i++) bgCur[key][i]+=(tgt[key][i]-bgCur[key][i])*k;
+}
+const rgbA=(c,a)=>`rgba(${c[0]|0},${c[1]|0},${c[2]|0},${a})`;
+
 function drawBG(t){
-  cx.fillStyle='#050008';
+  cx.fillStyle=rgbA(bgCur.base,1);
   cx.fillRect(0,0,W,H);
   // nebulosas
   const g1=cx.createRadialGradient(W*.2,H*.15,0,W*.2,H*.15,W*.7);
-  g1.addColorStop(0, feverT>0?'#4a3a0044':'#2D005044'); g1.addColorStop(1,'transparent');
+  g1.addColorStop(0, feverT>0?'rgba(74,58,0,.27)':rgbA(bgCur.neb1,.27)); g1.addColorStop(1,'transparent');
   cx.fillStyle=g1; cx.fillRect(0,0,W,H);
   const g2=cx.createRadialGradient(W*.85,H*.75,0,W*.85,H*.75,W*.6);
-  g2.addColorStop(0,'#6B21A822'); g2.addColorStop(1,'transparent');
+  g2.addColorStop(0,rgbA(bgCur.neb2,.13)); g2.addColorStop(1,'transparent');
   cx.fillStyle=g2; cx.fillRect(0,0,W,H);
   // estrellas
   for(const s of stars){
@@ -929,6 +1041,7 @@ function loop(now){
     if(nextBlink<=0){ blinkT=.14; nextBlink=2.4+Math.random()*3; }
     if(blinkT>0) blinkT-=dt;
   }
+  bgTick(dt);
   draw(t);
   requestAnimationFrame(loop);
 }
@@ -950,7 +1063,7 @@ const keys={};
 addEventListener('keydown',e=>{
   keys[e.key]=true;
   if((e.key===' '||e.key==='Enter')){
-    if(!$('scrRewards').classList.contains('hidden')) return; // no iniciar desde recompensas
+    if(['scrRewards','scrPerfil','scrTop'].some(id=>!$(id).classList.contains('hidden'))) return; // no iniciar desde pantallas secundarias
     if(state===ST.TITLE) startGame();
     else if(state===ST.OVER && !$('scrOver').classList.contains('hidden')) startGame();
   }
@@ -1076,6 +1189,171 @@ $('btnRewards').addEventListener('click',()=>openRewards('title'));
 $('btnRewards2').addEventListener('click',()=>openRewards('over'));
 $('btnRwBack').addEventListener('click',closeRewards);
 paintTitlePc();
+
+/* ---------------- Perfil del jugador (correo o teléfono) ----------------
+   Registro local: liga el récord y los Puntos Cíclope a un alias + contacto,
+   y genera un "código estelar" para respaldar o mover el progreso a otro
+   dispositivo sin necesitar servidor. */
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function perfilGet(){ try{ return JSON.parse(localStorage.getItem('ciclope_perfil')||'null'); }catch(_){ return null; } }
+function perfilSet(p){ localStorage.setItem('ciclope_perfil', JSON.stringify(p)); }
+function contactoTipo(v){
+  if(EMAIL_RE.test(v)) return 'email';
+  if(/^\d{10,13}$/.test(v.replace(/[\s\-().+]/g,''))) return 'tel';
+  return null;
+}
+function maskContacto(p){
+  if(p.tp==='email'){ const i=p.c.indexOf('@'); return p.c.slice(0,2)+'•••'+p.c.slice(i); }
+  return '•••• •• '+p.c.replace(/\D/g,'').slice(-4);
+}
+function chk36(s){ let h=7; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))%46655; return h.toString(36).padStart(3,'0'); }
+function exportCode(){
+  const p=perfilGet()||{};
+  const b=btoa(unescape(encodeURIComponent(JSON.stringify({v:1,a:p.a||'',c:p.c||'',tp:p.tp||'',b:best,pc:pcTotal()}))));
+  return 'GEMA1.'+b+'.'+chk36(b);
+}
+function importCode(str){
+  const m=String(str).trim().match(/^GEMA1\.([A-Za-z0-9+/=]+)\.([a-z0-9]{3})$/);
+  if(!m || chk36(m[1])!==m[2]) return null;
+  let o; try{ o=JSON.parse(decodeURIComponent(escape(atob(m[1])))); }catch(_){ return null; }
+  if(typeof o.b==='number' && o.b>best){ best=o.b; localStorage.setItem('ciclope_best',best); }
+  if(typeof o.pc==='number' && o.pc>pcTotal()) pcSet(o.pc);
+  if(o.a && o.c) perfilSet({a:String(o.a).slice(0,14), c:String(o.c).slice(0,60), tp:o.tp==='tel'?'tel':'email', d:Date.now()});
+  return o;
+}
+let pfFrom='title';
+function openPerfil(from){
+  pfFrom=from;
+  renderPerfil();
+  $('scrTitle').classList.add('hidden');
+  $('scrOver').classList.add('hidden');
+  $('scrPerfil').classList.remove('hidden');
+  sfx.ui();
+}
+function closePerfil(){
+  $('scrPerfil').classList.add('hidden');
+  (pfFrom==='over' ? $('scrOver') : $('scrTitle')).classList.remove('hidden');
+  paintBest(); paintTitlePc(); paintPerfilLinks();
+  sfx.ui();
+}
+function renderPerfil(){
+  const p=perfilGet();
+  $('pfErr').textContent=''; $('pfMsg').textContent='';
+  $('pfForm').classList.toggle('hidden', !!p);
+  $('pfCard').classList.toggle('hidden', !p);
+  if(p){
+    $('pfCardAlias').textContent=p.a;
+    $('pfCardContacto').textContent=(p.tp==='email'?'✉️ ':'📱 ')+maskContacto(p);
+    $('pfCardStats').innerHTML=`Récord: <b>${best}</b> · Puntos Cíclope: <b>${pcTotal()}</b>`;
+  }
+}
+function savePerfil(){
+  const a=$('pfAlias').value.trim().toUpperCase().slice(0,14);
+  const c=$('pfContacto').value.trim();
+  if(a.length<2){ $('pfErr').textContent='Ponle al menos 2 letras a tu alias.'; return; }
+  const tp=contactoTipo(c);
+  if(!tp){ $('pfErr').textContent='Escribe un correo válido o un teléfono de 10 dígitos.'; return; }
+  const prev=perfilGet();
+  perfilSet({a, c:(tp==='tel'?c.replace(/[\s\-().]/g,''):c), tp, d:Date.now()});
+  // renombra tus marcas locales del top con el nuevo alias
+  const ren=topGet().map(e=>(e.a==='ANÓNIMO'||(prev&&e.a===prev.a))?{...e,a}:e);
+  localStorage.setItem('ciclope_top', JSON.stringify(ren));
+  renderPerfil();
+  $('pfMsg').textContent='✔ Progreso vinculado a tu '+(tp==='email'?'correo':'teléfono');
+  sfx.gem();
+}
+function editPerfil(){
+  const p=perfilGet();
+  $('pfForm').classList.remove('hidden');
+  $('pfCard').classList.add('hidden');
+  if(p){ $('pfAlias').value=p.a; $('pfContacto').value=p.c; }
+}
+async function copyCode(){
+  const code=exportCode(), btn=$('btnPfCode');
+  try{ await navigator.clipboard.writeText(code); btn.textContent='✔ CÓDIGO COPIADO'; }
+  catch(_){ $('pfCode').value=code; btn.textContent='✔ CÓDIGO EN LA CAJA DE ABAJO'; }
+  setTimeout(()=>btn.textContent='COPIAR CÓDIGO ESTELAR',2400);
+  sfx.ui();
+}
+function doImport(){
+  const o=importCode($('pfCode').value);
+  if(!o){ $('pfMsg').textContent='✖ Código no válido'; return; }
+  $('pfCode').value='';
+  renderPerfil(); paintTitlePc();
+  $('pfMsg').textContent='✔ Progreso restaurado'+(o.b?` · récord ${o.b}`:'');
+  sfx.gem();
+}
+function paintPerfilLinks(){
+  const p=perfilGet();
+  $('btnPerfil').textContent = p ? `👤 ${p.a} · progreso respaldado` : '💾 Guarda tu progreso (correo o teléfono)';
+  $('btnPerfil2').textContent = p ? `👤 ${p.a}` : '💾 Guarda tu progreso';
+}
+
+/* ---------------- Top Cósmico (récord de puntos) ----------------
+   Por defecto guarda el top 10 de este dispositivo. Para activar el top
+   GLOBAL en línea, apunta LB_API a un endpoint propio (Google Apps Script,
+   Firebase o Supabase):
+     GET  LB_API  -> [{a:'ALIAS', s:1234}, …]  (máx 10, ordenado desc)
+     POST LB_API  <- {a:'ALIAS', s:1234, tp:'email'|'tel'}
+   Con LB_API vacío todo sigue funcionando en modo local. */
+const LB_API='';
+function topGet(){ try{ return JSON.parse(localStorage.getItem('ciclope_top')||'[]'); }catch(_){ return []; } }
+function topAdd(sc){
+  if(sc<=0) return;
+  const p=perfilGet(), t=topGet();
+  t.push({a:p?p.a:'ANÓNIMO', s:sc, d:new Date().toISOString().slice(0,10)});
+  t.sort((x,y)=>y.s-x.s);
+  localStorage.setItem('ciclope_top', JSON.stringify(t.slice(0,10)));
+  if(LB_API && p){
+    try{ fetch(LB_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({a:p.a,s:sc,tp:p.tp})}); }catch(_){}
+  }
+}
+let topFrom='title';
+function openTop(from){
+  topFrom=from;
+  renderTop(topGet(), false);
+  $('scrTitle').classList.add('hidden');
+  $('scrOver').classList.add('hidden');
+  $('scrTop').classList.remove('hidden');
+  sfx.ui();
+  if(LB_API){
+    fetch(LB_API,{cache:'no-store'}).then(r=>r.ok?r.json():null).then(g=>{
+      if(Array.isArray(g)&&g.length && !$('scrTop').classList.contains('hidden')) renderTop(g.slice(0,10), true);
+    }).catch(()=>{});
+  }
+}
+function closeTop(){
+  $('scrTop').classList.add('hidden');
+  (topFrom==='over' ? $('scrOver') : $('scrTitle')).classList.remove('hidden');
+  sfx.ui();
+}
+function renderTop(list, global){
+  $('topSub').textContent = global
+    ? 'Los mejores cazadores de la Gema en toda la galaxia.'
+    : 'Los mejores cazadores de la Gema en este dispositivo.';
+  const el=$('topList'), p=perfilGet();
+  el.innerHTML='';
+  if(!list.length){ el.innerHTML='<div class="topEmpty">Aún no hay récords. ¡Sé el primero, humano!</div>'; return; }
+  const medals=['🥇','🥈','🥉'];
+  list.forEach((e,i)=>{
+    const row=document.createElement('div');
+    row.className='topRow'+((global&&p&&e.a===p.a)?' me':'');
+    row.innerHTML=`<span class="topPos">${medals[i]||(i+1)}</span><span class="topAlias"></span><span class="topScore">${+e.s||0}</span>`;
+    row.querySelector('.topAlias').textContent=e.a||'ANÓNIMO';
+    el.appendChild(row);
+  });
+}
+$('btnTop').addEventListener('click',()=>openTop('title'));
+$('btnTop2').addEventListener('click',()=>openTop('over'));
+$('btnTopBack').addEventListener('click',closeTop);
+$('btnPerfil').addEventListener('click',()=>openPerfil('title'));
+$('btnPerfil2').addEventListener('click',()=>openPerfil('over'));
+$('btnPfBack').addEventListener('click',closePerfil);
+$('btnPfSave').addEventListener('click',savePerfil);
+$('btnPfEdit').addEventListener('click',editPerfil);
+$('btnPfCode').addEventListener('click',copyCode);
+$('btnPfImport').addEventListener('click',doImport);
+paintPerfilLinks();
 
 /* ---------------- Botones ---------------- */
 $('btnPlay').addEventListener('click',()=>{ac();startGame();});
