@@ -272,6 +272,10 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
 }
 #pcGanados b{color:var(--yellow);text-shadow:0 0 12px var(--yellow-glow)}
 #pcChip{color:var(--yellow)}
+#rankGlobal{
+  font-family:var(--display);font-size:13px;color:var(--white);letter-spacing:1.5px;
+  margin-bottom:6px;min-height:16px;text-shadow:0 0 10px var(--purple-light);
+}
 
 /* ---------- Salón Cíclope (top + perfil) ---------- */
 .miniLinks{
@@ -375,6 +379,7 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
     <div id="rango"></div>
     <p id="frase"></p>
     <div id="pcGanados"></div>
+    <div id="rankGlobal"></div>
     <div class="btnRow">
       <button class="btn" id="btnAgain">OTRA VEZ</button>
       <button class="btn secondary" id="btnShare">COMPARTIR 📤</button>
@@ -409,12 +414,12 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
   <!-- PANTALLA SALÓN CÍCLOPE (top de récords + perfil) -->
   <div class="screen hidden" id="scrSalon">
     <h2 class="rwTitle">SALÓN CÍCLOPE</h2>
-    <p class="rwHow" id="salonSub">Los mejores cazadores de la Gema en este dispositivo.<br>El top global de la Familia Cíclope llegará pronto.</p>
+    <p class="rwHow" id="salonSub">Los mejores cazadores de la Gema Mágica.</p>
     <div id="topList"></div>
     <div class="perfilBox">
       <div class="perfilTitle">👤 GUARDA TU PROGRESO</div>
       <div id="perfilForm">
-        <p class="perfilHint">Regístrate para firmar el top y proteger tus Puntos Cíclope.</p>
+        <p class="perfilHint">Regístrate para firmar el <b>top global</b> de la Familia Cíclope y proteger tus Puntos Cíclope.</p>
         <input class="fld" id="inNombre" placeholder="Tu apodo cíclope" maxlength="14" autocomplete="nickname">
         <input class="fld" id="inContacto" placeholder="Correo o celular" maxlength="60" autocomplete="email">
         <button class="btn secondary" id="btnGuardarPerfil">GUARDAR</button>
@@ -630,6 +635,16 @@ function gameOver(){
     : (pc.raw>0 ? 'TOPE DIARIO DE PUNTOS ALCANZADO' : '');
   const perfil=perfilGet();
   topPush(perfil?perfil.n:null, score);
+  // top global: solo los registrados firman (incentivo para registrarse)
+  $('rankGlobal').textContent='';
+  if(perfil && score>0){
+    fetch('/api/score',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:perfil.n,s:score})})
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(j=>{ if(j&&j.ok&&j.rank) $('rankGlobal').textContent = j.rank<=10 ? `🏆 ERES #${j.rank} DEL TOP GLOBAL` : `#${j.rank} de la galaxia`; })
+      .catch(()=>{});
+  } else if(!perfil && score>=500){
+    $('rankGlobal').textContent='Regístrate en el Salón para firmar el top global 👁';
+  }
   setTimeout(()=>$('scrOver').classList.remove('hidden'), 550);
   sfx.over();
 }
@@ -1227,16 +1242,35 @@ function topPush(name,sc){
   top.sort((a,b)=>b.s-a.s);
   localStorage.setItem('ciclope_top', JSON.stringify(top.slice(0,10)));
 }
-function renderTop(){
-  const top=topGet(), list=$('topList');
-  if(!top.length){ list.innerHTML='<div class="topEmpty">Aún nadie caza la Gema en este dispositivo.<br>Sé la primera leyenda.</div>'; return; }
-  const p=perfilGet();
-  const med=['🥇','🥈','🥉'];
-  list.innerHTML=top.map((r,i)=>`<div class="topRow${i===0?' first':''}${p&&r.n===p.n?' me':''}">
+function rowsHTML(rows){
+  const p=perfilGet(), med=['🥇','🥈','🥉'];
+  return rows.map((r,i)=>`<div class="topRow${i===0?' first':''}${p&&r.n===p.n?' me':''}">
     <span class="topPos">${med[i]||(i+1)}</span>
-    <span class="topName">${r.n.replace(/[<>&]/g,'')}</span>
+    <span class="topName">${String(r.n).replace(/[<>&]/g,'')}</span>
     <span class="topScore">${r.s}</span>
   </div>`).join('');
+}
+let topSeq=0;
+function renderTop(){
+  const list=$('topList'), sub=$('salonSub');
+  // primero lo local (instantáneo), luego se actualiza con el top global
+  const local=topGet();
+  list.innerHTML = local.length ? rowsHTML(local)
+    : '<div class="topEmpty">Aún nadie caza la Gema.<br>Sé la primera leyenda.</div>';
+  sub.innerHTML='Consultando el ojo de Cyclos…';
+  const seq=++topSeq;
+  fetch('/api/top',{cache:'no-store'})
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(j=>{
+      if(seq!==topSeq || !j || !Array.isArray(j.top)) return;
+      if(j.top.length) list.innerHTML=rowsHTML(j.top.slice(0,10));
+      else if(!local.length) list.innerHTML='<div class="topEmpty">La galaxia espera a su primera leyenda.<br>Regístrate y caza la Gema.</div>';
+      sub.innerHTML='<b>TOP GLOBAL</b> de la Familia Cíclope 👁 en vivo.<br>Regístrate abajo para firmar tus récords.';
+    })
+    .catch(()=>{
+      if(seq!==topSeq) return;
+      sub.innerHTML='Sin señal de Cyclos — mostrando el top de este dispositivo.';
+    });
 }
 
 function paintPerfil(){
