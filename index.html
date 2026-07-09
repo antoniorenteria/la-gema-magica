@@ -272,6 +272,53 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
 }
 #pcGanados b{color:var(--yellow);text-shadow:0 0 12px var(--yellow-glow)}
 #pcChip{color:var(--yellow)}
+
+/* ---------- Salón Cíclope (top + perfil) ---------- */
+.miniLinks{
+  display:flex;gap:10px;align-items:center;margin-top:10px;
+  font-size:11px;color:#5a4a75;
+}
+.lnk{
+  background:none;border:none;cursor:pointer;padding:4px 2px;
+  font-family:var(--body);font-size:11px;letter-spacing:1.5px;
+  color:var(--muted);text-decoration:underline;text-underline-offset:3px;
+}
+.lnk:active{color:var(--yellow)}
+#topList{width:100%;max-width:340px;display:flex;flex-direction:column;gap:5px;margin-bottom:16px}
+.topRow{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:8px 14px;font-size:13px;
+}
+.topRow.first{border-color:var(--yellow);box-shadow:0 0 14px var(--yellow-glow)}
+.topRow.me{border-color:var(--purple-light)}
+.topPos{font-family:var(--display);font-size:14px;color:var(--muted);width:26px;flex:none}
+.topRow.first .topPos{color:var(--yellow)}
+.topName{flex:1;text-align:left;color:var(--white);font-weight:600;letter-spacing:.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topScore{font-family:var(--display);font-size:15px;color:var(--yellow);letter-spacing:1px}
+.topEmpty{font-size:12px;color:var(--muted);padding:14px 0}
+.perfilBox{
+  width:100%;max-width:340px;
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:14px 16px;text-align:center;
+}
+.perfilTitle{font-family:var(--display);font-size:14px;color:var(--yellow);letter-spacing:1.5px;margin-bottom:6px}
+.perfilHint{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.perfilHint b{color:var(--white)}
+.perfilNombre{font-family:var(--display);font-size:18px;color:var(--white);letter-spacing:1px;margin-bottom:4px}
+.fld{
+  width:100%;box-sizing:border-box;margin-bottom:8px;
+  background:#0D0015;border:1px solid var(--border);border-radius:10px;
+  color:var(--white);font-family:var(--body);font-size:14px;
+  padding:11px 12px;outline:none;text-align:center;
+}
+.fld:focus{border-color:var(--purple-light)}
+.fldErr{font-size:11px;color:#FF7A9A;min-height:14px;margin-top:6px}
+.llaveCode{font-size:14px;letter-spacing:2px;word-break:break-all;line-height:1.5}
+#perfilInfo.hidden,#perfilForm.hidden{display:none}
+.restoreBox{margin-top:12px;font-size:11.5px;color:var(--muted)}
+.restoreBox summary{cursor:pointer;letter-spacing:.5px;margin-bottom:8px}
+.restoreBox .fld{margin-top:4px}
 </style>
 </head>
 <body>
@@ -308,6 +355,7 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
       <button class="btn ghost" id="btnRewards">🎁 RECOMPENSAS <span id="pcChip"></span></button>
     </div>
     <div class="best" id="bestTitle"></div>
+    <div class="miniLinks"><button class="lnk" id="lnkSalon">🏆 TOP</button><span>·</span><button class="lnk" id="lnkPerfil">👤 GUARDAR PROGRESO</button></div>
     <div class="credit">Cocinado por Mirano en su nave · Pachuca, Planeta Tierra</div>
   </div>
 
@@ -335,6 +383,7 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
       <button class="btn ghost" id="btnRewards2">🎁 RECOMPENSAS</button>
       <a class="btn ghost" href="https://elanillodelciclope.com/" target="_blank" rel="noopener">VER EL MENÚ →</a>
     </div>
+    <div class="miniLinks"><button class="lnk" id="lnkSalon2">🏆 VER EL TOP</button></div>
     <p class="cta">Esta aventura continúa en nuestras redes ·<br>Suc. Tulipanes y Suc. Revolución · Pachuca, Hgo.</p>
   </div>
 
@@ -354,6 +403,41 @@ h1.gameTitle span{color:var(--purple-light);text-shadow:0 0 24px var(--purple-li
     <p class="rwFine">Válido únicamente en sucursal (Tulipanes y Revolución, Pachuca). Un canje por visita. El canje lo confirma el staff en tu teléfono y los puntos se descuentan al momento. Recompensas sujetas a cambio.</p>
     <div class="btnRow">
       <button class="btn secondary" id="btnRwBack">← VOLVER</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA SALÓN CÍCLOPE (top de récords + perfil) -->
+  <div class="screen hidden" id="scrSalon">
+    <h2 class="rwTitle">SALÓN CÍCLOPE</h2>
+    <p class="rwHow" id="salonSub">Los mejores cazadores de la Gema en este dispositivo.<br>El top global de la Familia Cíclope llegará pronto.</p>
+    <div id="topList"></div>
+    <div class="perfilBox">
+      <div class="perfilTitle">👤 GUARDA TU PROGRESO</div>
+      <div id="perfilForm">
+        <p class="perfilHint">Regístrate para firmar el top y proteger tus Puntos Cíclope.</p>
+        <input class="fld" id="inNombre" placeholder="Tu apodo cíclope" maxlength="14" autocomplete="nickname">
+        <input class="fld" id="inContacto" placeholder="Correo o celular" maxlength="60" autocomplete="email">
+        <button class="btn secondary" id="btnGuardarPerfil">GUARDAR</button>
+        <div class="fldErr" id="perfilErr"></div>
+      </div>
+      <div id="perfilInfo" class="hidden">
+        <div class="perfilNombre" id="perfilNombre"></div>
+        <p class="perfilHint">Tu <b>Llave Cíclope</b> guarda tus puntos y tu récord. Cópiala en tus notas: con ella recuperas todo en otro teléfono.</p>
+        <div class="rwCode llaveCode" id="llave"></div>
+        <div class="btnRow">
+          <button class="btn secondary" id="btnCopiarLlave">COPIAR LLAVE</button>
+          <button class="btn ghost" id="btnEditPerfil">EDITAR</button>
+        </div>
+      </div>
+      <details class="restoreBox">
+        <summary>¿Vienes de otro teléfono? Restaura con tu llave</summary>
+        <input class="fld" id="inLlave" placeholder="GEMA-XXXX-XXXX-…">
+        <button class="btn secondary" id="btnRestaurar">RESTAURAR</button>
+        <div class="fldErr" id="llaveErr"></div>
+      </details>
+    </div>
+    <div class="btnRow">
+      <button class="btn secondary" id="btnSalonBack">← VOLVER</button>
     </div>
   </div>
 </div>
@@ -524,6 +608,7 @@ function startGame(){
   $('scrTitle').classList.add('hidden');
   $('scrOver').classList.add('hidden');
   $('scrRewards').classList.add('hidden');
+  $('scrSalon').classList.add('hidden');
   $('hud').classList.add('on');
   paintLives();paintScore();paintCombo();
   sfx.ui();
@@ -543,6 +628,8 @@ function gameOver(){
   $('pcGanados').innerHTML = pc.allowed>0
     ? `+<b>${pc.allowed}</b> ${pc.allowed===1?'PUNTO':'PUNTOS'} CÍCLOPE 👁`
     : (pc.raw>0 ? 'TOPE DIARIO DE PUNTOS ALCANZADO' : '');
+  const perfil=perfilGet();
+  topPush(perfil?perfil.n:null, score);
   setTimeout(()=>$('scrOver').classList.remove('hidden'), 550);
   sfx.over();
 }
@@ -643,15 +730,36 @@ function hit(){
 }
 
 /* ---------------- Dibujo ---------------- */
+// Fondo evolutivo: las nebulosas cambian de color según el avance de la
+// partida (sincronizado con las oleadas del lore), misma textura cósmica.
+const BG_PHASES=[
+  {t:0,   a:[45,0,80],   b:[107,33,168]},  // púrpura profundo — el vacío
+  {t:32,  a:[10,42,110], b:[37,99,235]},   // azul cósmico — los Kori aceleran
+  {t:55,  a:[6,58,38],   b:[22,163,74]},   // verde — territorio de la Casa Verde
+  {t:85,  a:[92,60,0],   b:[217,150,6]},   // ámbar — la Gema está cerca
+  {t:120, a:[95,10,32],  b:[220,38,38]}    // rojo — el ojo de Cyclos te observa
+];
+function bgCols(gt){
+  // la fase se mantiene estable; al entrar a una nueva, transición suave de 6 s
+  let i=0;
+  while(i<BG_PHASES.length-1 && gt>=BG_PHASES[i+1].t) i++;
+  const cur=BG_PHASES[i], prev=BG_PHASES[Math.max(0,i-1)];
+  const k=i===0?1:Math.min(1,(gt-cur.t)/6);
+  const mix=(A,B)=>A.map((v,j)=>Math.round(v+(B[j]-v)*k));
+  return {a:mix(prev.a,cur.a), b:mix(prev.b,cur.b)};
+}
 function drawBG(t){
   cx.fillStyle='#050008';
   cx.fillRect(0,0,W,H);
-  // nebulosas
+  // nebulosas (color según progreso de la partida)
+  const bc=bgCols(state===ST.PLAY?elapsed:0);
   const g1=cx.createRadialGradient(W*.2,H*.15,0,W*.2,H*.15,W*.7);
-  g1.addColorStop(0, feverT>0?'#4a3a0044':'#2D005044'); g1.addColorStop(1,'transparent');
+  g1.addColorStop(0, feverT>0?'rgba(90,70,0,.4)':`rgba(${bc.a[0]},${bc.a[1]},${bc.a[2]},.42)`);
+  g1.addColorStop(1,'transparent');
   cx.fillStyle=g1; cx.fillRect(0,0,W,H);
   const g2=cx.createRadialGradient(W*.85,H*.75,0,W*.85,H*.75,W*.6);
-  g2.addColorStop(0,'#6B21A822'); g2.addColorStop(1,'transparent');
+  g2.addColorStop(0,`rgba(${bc.b[0]},${bc.b[1]},${bc.b[2]},.24)`);
+  g2.addColorStop(1,'transparent');
   cx.fillStyle=g2; cx.fillRect(0,0,W,H);
   // estrellas
   for(const s of stars){
@@ -951,6 +1059,7 @@ addEventListener('keydown',e=>{
   keys[e.key]=true;
   if((e.key===' '||e.key==='Enter')){
     if(!$('scrRewards').classList.contains('hidden')) return; // no iniciar desde recompensas
+    if(!$('scrSalon').classList.contains('hidden')) return;   // ni desde el salón (hay inputs)
     if(state===ST.TITLE) startGame();
     else if(state===ST.OVER && !$('scrOver').classList.contains('hidden')) startGame();
   }
@@ -1076,6 +1185,129 @@ $('btnRewards').addEventListener('click',()=>openRewards('title'));
 $('btnRewards2').addEventListener('click',()=>openRewards('over'));
 $('btnRwBack').addEventListener('click',closeRewards);
 paintTitlePc();
+
+/* ---------------- Salón Cíclope: perfil, Llave y top ---------------- */
+// Perfil local: apodo + correo/celular. La Llave Cíclope es un código portable
+// que lleva puntos, récord y perfil para restaurar el progreso en otro teléfono.
+const LLAVE_XOR=113; // ofuscación ligera (el anti-trampas real requiere servidor)
+function perfilGet(){ try{ return JSON.parse(localStorage.getItem('ciclope_perfil')||'null'); }catch(_){ return null; } }
+function perfilSet(p){ localStorage.setItem('ciclope_perfil', JSON.stringify(p)); }
+
+// base64 con '.'/'_' en lugar de '+'/'/' para poder usar '-' como separador visual
+function b64k(bytes){ return btoa(String.fromCharCode(...bytes)).replace(/\+/g,'.').replace(/\//g,'_').replace(/=+$/,''); }
+function unb64k(s){ s=s.replace(/\./g,'+').replace(/_/g,'/'); while(s.length%4)s+='='; return Uint8Array.from(atob(s),c=>c.charCodeAt(0)); }
+function makeLlave(){
+  const p=perfilGet()||{};
+  const payload=JSON.stringify({v:1, pc:pcTotal(), best, n:p.n||'', c:p.c||''});
+  const bytes=new TextEncoder().encode(payload).map(b=>b^LLAVE_XOR);
+  let sum=0; for(const b of bytes) sum=(sum+b)%256;
+  const all=new Uint8Array(bytes.length+1); all.set(bytes); all[bytes.length]=sum;
+  return 'GEMA-'+b64k(all).replace(/(.{4})/g,'$1-').replace(/-$/,'');
+}
+function parseLlave(str){
+  try{
+    const cand=str.trim().replace(/^GEMA-/i,'').replace(/-/g,'').replace(/\s+/g,'');
+    const all=unb64k(cand);
+    if(all.length<3) return null;
+    const bytes=all.slice(0,-1), sum=all[all.length-1];
+    let s=0; for(const b of bytes) s=(s+b)%256;
+    if(s!==sum) return null;
+    const o=JSON.parse(new TextDecoder().decode(bytes.map(b=>b^LLAVE_XOR)));
+    if(o && o.v===1 && typeof o.pc==='number') return o;
+  }catch(_){}
+  return null;
+}
+
+// Top de récords (por dispositivo; listo para volverse global con backend)
+function topGet(){ try{ return JSON.parse(localStorage.getItem('ciclope_top')||'[]'); }catch(_){ return []; } }
+function topPush(name,sc){
+  if(sc<=0) return;
+  const top=topGet();
+  top.push({n:(name||'CÍCLOPE ANÓNIMO').slice(0,15), s:sc, d:new Date().toISOString().slice(0,10)});
+  top.sort((a,b)=>b.s-a.s);
+  localStorage.setItem('ciclope_top', JSON.stringify(top.slice(0,10)));
+}
+function renderTop(){
+  const top=topGet(), list=$('topList');
+  if(!top.length){ list.innerHTML='<div class="topEmpty">Aún nadie caza la Gema en este dispositivo.<br>Sé la primera leyenda.</div>'; return; }
+  const p=perfilGet();
+  const med=['🥇','🥈','🥉'];
+  list.innerHTML=top.map((r,i)=>`<div class="topRow${i===0?' first':''}${p&&r.n===p.n?' me':''}">
+    <span class="topPos">${med[i]||(i+1)}</span>
+    <span class="topName">${r.n.replace(/[<>&]/g,'')}</span>
+    <span class="topScore">${r.s}</span>
+  </div>`).join('');
+}
+
+function paintPerfil(){
+  const p=perfilGet();
+  $('perfilForm').classList.toggle('hidden', !!p);
+  $('perfilInfo').classList.toggle('hidden', !p);
+  if(p){
+    $('perfilNombre').textContent='👁 '+p.n;
+    $('llave').textContent=makeLlave();
+  }
+}
+let salonFrom='title';
+function openSalon(from){
+  salonFrom=from;
+  renderTop(); paintPerfil();
+  $('perfilErr').textContent=''; $('llaveErr').textContent='';
+  $('scrTitle').classList.add('hidden');
+  $('scrOver').classList.add('hidden');
+  $('scrRewards').classList.add('hidden');
+  $('scrSalon').classList.remove('hidden');
+  sfx.ui();
+}
+function closeSalon(){
+  $('scrSalon').classList.add('hidden');
+  (salonFrom==='over' ? $('scrOver') : $('scrTitle')).classList.remove('hidden');
+  paintBest(); paintTitlePc();
+  sfx.ui();
+}
+$('btnGuardarPerfil').addEventListener('click',()=>{
+  const n=$('inNombre').value.trim(), c=$('inContacto').value.trim();
+  const okMail=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c);
+  const okTel=/^[\d\s()+-]{10,15}$/.test(c);
+  if(n.length<2){ $('perfilErr').textContent='Ponle un apodo digno de un Cíclope (mín. 2 letras).'; return; }
+  if(!okMail && !okTel){ $('perfilErr').textContent='Eso no parece un correo ni un celular de este planeta.'; return; }
+  perfilSet({n, c, reg:new Date().toISOString().slice(0,10)});
+  $('perfilErr').textContent='';
+  paintPerfil(); renderTop();
+  sfx.gem();
+});
+$('btnEditPerfil').addEventListener('click',()=>{
+  const p=perfilGet();
+  if(p){ $('inNombre').value=p.n; $('inContacto').value=p.c; }
+  $('perfilForm').classList.remove('hidden');
+  $('perfilInfo').classList.add('hidden');
+  sfx.ui();
+});
+$('btnCopiarLlave').addEventListener('click',async()=>{
+  try{
+    await navigator.clipboard.writeText($('llave').textContent);
+    $('btnCopiarLlave').textContent='¡COPIADA! ✔';
+    setTimeout(()=>$('btnCopiarLlave').textContent='COPIAR LLAVE',1600);
+  }catch(_){ $('llaveErr').textContent='No se pudo copiar; selecciónala manualmente.'; }
+  sfx.ui();
+});
+$('btnRestaurar').addEventListener('click',()=>{
+  const o=parseLlave($('inLlave').value);
+  if(!o){ $('llaveErr').textContent='Llave inválida. Revisa que esté completa.'; return; }
+  // nunca restar: se conserva lo mejor de ambos mundos
+  pcSet(Math.max(pcTotal(), o.pc||0));
+  if((o.best||0)>best){ best=o.best; localStorage.setItem('ciclope_best',best); }
+  if(o.n && !perfilGet()) perfilSet({n:o.n, c:o.c||'', reg:new Date().toISOString().slice(0,10)});
+  $('inLlave').value='';
+  $('llaveErr').textContent='';
+  paintPerfil(); renderTop(); paintTitlePc(); paintBest();
+  toast('👁 Progreso restaurado, Cíclope.');
+  sfx.gem();
+});
+$('lnkSalon').addEventListener('click',()=>openSalon('title'));
+$('lnkPerfil').addEventListener('click',()=>openSalon('title'));
+$('lnkSalon2').addEventListener('click',()=>openSalon('over'));
+$('btnSalonBack').addEventListener('click',closeSalon);
 
 /* ---------------- Botones ---------------- */
 $('btnPlay').addEventListener('click',()=>{ac();startGame();});
