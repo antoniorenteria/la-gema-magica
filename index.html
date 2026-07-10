@@ -577,9 +577,9 @@ function toast(msg,dur){
 function spawn(){
   const t=elapsed;
   const baseSize = Math.min(W,520)/13;
-  const speed = (128 + t*3 + speedBoost + Math.random()*55) * (H/720);
+  const speed = (132 + t*4.2 + speedBoost + Math.random()*70) * (H/720);
   const x = 30 + Math.random()*(W-60);
-  const hazardP = Math.min(.38, .06 + t*.0023 + hazardBoost);
+  const hazardP = Math.min(.42, .06 + t*.0032 + hazardBoost);
   const gemP = .045 + gemBoost;
   const lifeP = lives<3 ? .035 : 0;
   const roll = Math.random();
@@ -668,7 +668,7 @@ function update(dt){
   spawnT-=dt;
   if(spawnT<=0){
     spawn();
-    spawnT = Math.max(.32, 1.06 - elapsed*.0052) * (feverT>0?.75:1);
+    spawnT = Math.max(.28, 1.0 - elapsed*.0062) * (feverT>0?.75:1);
   }
   // movimiento jugador
   const prevX=px;
